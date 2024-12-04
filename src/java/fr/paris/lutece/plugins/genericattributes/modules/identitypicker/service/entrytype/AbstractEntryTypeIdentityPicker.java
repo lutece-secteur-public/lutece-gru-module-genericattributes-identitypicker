@@ -84,7 +84,7 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
 	private static final String FIELD_MODIFY_IDENTITY = "modify_identity";
 	private static final String FIELD_STORAGE_IDENTITY = "storage_identity";
 	
-	public static final String PROPERTY_CLIENT_CODE = "genericattributes.entrytype.identitypicker.client.code";
+	public static final String PROPERTY_CLIENT_CODE = "identitypicker.default.client.code";
 	
 	private ReferentialService _referentialService;
     /**
