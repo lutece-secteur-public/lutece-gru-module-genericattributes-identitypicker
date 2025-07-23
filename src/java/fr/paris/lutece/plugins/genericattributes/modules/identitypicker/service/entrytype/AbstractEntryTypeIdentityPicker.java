@@ -443,13 +443,13 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
 			AppLogService.error(e);
 		}
     	
-    	List<AttributeKeyDto> attributeKeys = attributeKeyList.getAttributeKeys();
-        
-        for (AttributeKeyDto attr : attributeKeys)
+    	if ( attributeKeyList != null && attributeKeyList.getAttributeKeys() != null )
+    	{
+    	    	for (AttributeKeyDto attr : attributeKeyList.getAttributeKeys())
 		{
 			lstAttributes.addItem( attr.getKeyName(), attr.getName( ));
-			
-		}
+		}	
+	}
     	
         return lstAttributes;
     }
