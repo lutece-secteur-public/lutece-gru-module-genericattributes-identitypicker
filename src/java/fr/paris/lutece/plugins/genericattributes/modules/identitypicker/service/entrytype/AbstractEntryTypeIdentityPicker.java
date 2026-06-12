@@ -320,9 +320,14 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
     		if ( request.getParameter(strField) != null )
     		{
 				String strValue = request.getParameter(strField).trim();
-				
-				Field field = GenericAttributesUtils.findFieldByTitleInTheList( strField, entry.getFields( ) );
-				
+
+				Field field = entry.getFieldByCode( strField );
+
+				if ( field == null )
+				{
+					continue;
+				}
+
 				GenericAttributesUtils.createOrUpdateField( entry, field.getCode(), field.getTitle(), strValue );
 	
 				Response response = new Response();
