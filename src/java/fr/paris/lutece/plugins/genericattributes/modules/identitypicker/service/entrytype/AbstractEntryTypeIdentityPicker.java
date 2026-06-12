@@ -38,7 +38,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,7 +63,6 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
@@ -85,8 +86,13 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
 	private static final String FIELD_STORAGE_IDENTITY = "storage_identity";
 	
 	public static final String PROPERTY_CLIENT_CODE = "identitypicker.default.client.code";
-	
+
+	@Inject
+	@Named( BEAN_REFERENTIAL_SERVICE )
 	private ReferentialService _referentialService;
+
+	@Inject
+	protected RegularExpressionService _regularExpressionService;
     /**
      * {@inheritDoc}
      */
@@ -241,11 +247,11 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
     {
         ReferenceList refListRegularExpression = null;
 
-        if ( RegularExpressionService.getInstance( ).isAvailable( ) )
+        if ( _regularExpressionService.isAvailable( ) )
         {
             refListRegularExpression = new ReferenceList( );
 
-            List<RegularExpression> listRegularExpression = RegularExpressionService.getInstance( ).getAllRegularExpression( );
+            List<RegularExpression> listRegularExpression = _regularExpressionService.getAllRegularExpression( );
 
             for ( RegularExpression regularExpression : listRegularExpression )
             {
@@ -365,11 +371,11 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
         }
 
         if ( ( !strValueEntry.equals( StringUtils.EMPTY ) ) && CollectionUtils.isNotEmpty( listRegularExpression )
-                && RegularExpressionService.getInstance( ).isAvailable( ) )
+                && _regularExpressionService.isAvailable( ) )
         {
             for ( RegularExpression regularExpression : listRegularExpression )
             {
-                if ( !RegularExpressionService.getInstance( ).isMatches( strValueEntry, regularExpression ) )
+                if ( !_regularExpressionService.isMatches( strValueEntry, regularExpression ) )
                 {
                     GenericAttributeError error = new GenericAttributeError( );
                     error.setMandatoryError( false );
@@ -423,17 +429,7 @@ public abstract class AbstractEntryTypeIdentityPicker extends EntryTypeService
     	RequestAuthor author = new RequestAuthor( );
         author.setType( AuthorType.admin );
         author.setName( AppPropertiesService.getProperty( PROPERTY_CLIENT_CODE) );
-    	
-        
-        //GenericAttributesUtils.findFieldByIdInTheList( nIdField, getSqlQueryFields( entry ) );
-//        try {
-//			List<AttributeDto> lstAttributes = IdentityPickerService.getInstance().getIdentity(BEAN_REFERENTIAL_SERVICE, null).getAttributes();
-//			List<AttributeDefinitionDto> lstAttributeDefinitions = IdentityPickerService.getInstance().getRules(null).getContract().getAttributeDefinitions();
-//		} catch (IdentityStoreException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-    	_referentialService = SpringContextService.getBean( BEAN_REFERENTIAL_SERVICE );
+
     	AttributeSearchResponse attributeKeyList = null;
     	ReferenceList lstAttributes = new ReferenceList();
     	
